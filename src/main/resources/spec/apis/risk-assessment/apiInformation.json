@@ -1,0 +1,19 @@
+{
+  "properties": {
+    "apiRevision": "1",
+    "authenticationSettings": {},
+    "description": "Risk Assessment service",
+    "displayName": "Risk Assessment",
+    "isCurrent": true,
+    "path": "riskManagement",
+    "protocols": [
+      "https"
+    ],
+    "serviceUrl": "https://example.com/api/risk",
+    "subscriptionKeyParameterNames": {
+      "header": "Ocp-Apim-Subscription-Key",
+      "query": "subscription-key"
+    },
+    "subscriptionRequired": false
+  }
+}

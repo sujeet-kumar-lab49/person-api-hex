@@ -1,0 +1,135 @@
+openapi: 3.0.1
+info:
+  title: Party Profile Management
+  description: DDD Bounded Context Party Reference Data Directory (expanded with ISO200022)
+  version: v1
+servers:
+  - url: https://lab49devportal.azure-api.net/partyManagement/v1
+paths:
+  '/party/{partyId}':
+    get:
+      tags:
+        - CR (DDD Aggregate)  - PartyReferenceDataDirectoryEntry'
+      summary: Get party Resource by CID (Customer Identifier)
+      description: Retrieve party resource by customer identifier.
+      operationId: Party-Read
+      parameters:
+        - name: partyId
+          in: path
+          description: Format - int64.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Party'
+              example:
+                Get Dummy Party:
+                  value:
+                    id: 1
+                    name: Dummy Party
+        '400':
+          description: Bad Request
+    post:
+      summary: Create resource
+      description: Create resource
+      operationId: post-party-partyid
+      parameters:
+        - name: partyId
+          in: path
+          description: Format - int64.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MyResource'
+            example:
+              Create Dummy Party:
+                value:
+                  id: 1
+                  name: Dummy Party
+      responses:
+        '201':
+          description: Created
+    put:
+      summary: Update resource
+      description: Update resource
+      operationId: put-party-partyid
+      parameters:
+        - name: partyId
+          in: path
+          description: Format - int64.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MyResource'
+            example:
+              Update Dummy Party:
+                value:
+                  id: 1
+                  name: Dummy Party
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: Delete resource
+      description: Delete resource
+      operationId: delete-party-partyid
+      parameters:
+        - name: partyId
+          in: path
+          description: Format - int64.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    Party:
+      type: object
+      properties:
+        id:
+          type: integer
+        contactPoint:
+          $ref: '#/components/schemas/ContactPoint'
+        name:
+          type: string
+    ContactPoint:
+      type: object
+      properties:
+        identification:
+          type: string
+        phone:
+          type: string
+      description: 'Number, physical or virtual address, used for communication.'
+    MyResource:
+      type: object
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]

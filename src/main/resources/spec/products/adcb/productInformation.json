@@ -1,0 +1,9 @@
+{
+  "properties": {
+    "approvalRequired": false,
+    "description": "ADCB ",
+    "displayName": "ADCB",
+    "state": "published",
+    "subscriptionRequired": true
+  }
+}

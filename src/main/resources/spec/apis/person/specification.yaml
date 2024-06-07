@@ -1,0 +1,237 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Person
+  description: Rest Services for a Person/Applicant
+  contact:
+    name: ADCB Service Team
+    email: dummy@lab49.com
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  '/person/{personId}':
+    get:
+      summary: Get Person Info by Person ID
+      description: Retrieve the information of the person with the matching person ID.
+      operationId: get-person-by-id
+      parameters:
+        - name: personId
+          in: path
+          description: Id of an existing person.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Person Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+              examples:
+                Get Person Alice Smith:
+                  value:
+                    id: 142
+                    firstName: Alice
+                    lastName: Smith
+                    email: alice.smith@gmail.com
+                    dateOfBirth: '1997-10-31'
+                    emailVerified: true
+                    signUpDate: '2019-08-24'
+        '404':
+          description: Person Not Found
+      servers:
+        - url: 'http://localhost:8080'
+    patch:
+      summary: Update Person Information
+      description: Update the information of an existing person.
+      operationId: patch-person-by-id
+      parameters:
+        - name: personId
+          in: path
+          description: Id of an existing person.
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Patch person properties to update.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                  description: 'If a new email is given, the person''s email verified property will be set to false.'
+                dateOfBirth:
+                  type: string
+            examples:
+              Update First Name:
+                value:
+                  firstName: Rebecca
+              Update Email:
+                value:
+                  email: rebecca@gmail.com
+              Update Last Name & Date of Birth:
+                value:
+                  lastName: Baker
+                  dateOfBirth: '1985-10-02'
+      responses:
+        '200':
+          description: Person Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+              examples:
+                Updated Person Rebecca Baker:
+                  value:
+                    id: 13
+                    firstName: Rebecca
+                    lastName: Baker
+                    email: rebecca@gmail.com
+                    dateOfBirth: '1985-10-02'
+                    emailVerified: false
+                    createDate: '2019-08-24'
+        '404':
+          description: Person Not Found
+        '409':
+          description: Email Already Taken
+      servers:
+        - url: 'http://localhost:8080'
+    delete:
+      summary: Delete Person Info by Person ID
+      description: Delete the information of the person with the matching person ID.
+      operationId: delete-person-by-id
+      parameters:
+        - name: personId
+          in: path
+          description: Id of an existing person.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Person Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+              examples:
+                Updated Person Rebecca Baker:
+                  value:
+                    id: 13
+                    firstName: Rebecca
+                    lastName: Baker
+                    email: rebecca@gmail.com
+                    dateOfBirth: '1985-10-02'
+                    emailVerified: false
+                    createDate: '2019-08-24'
+        '404':
+          description: Person Not Found
+      servers:
+        - url: 'http://localhost:8080'
+
+  /person:
+    post:
+      summary: Create New Person
+      description: Create a new person.
+      operationId: post-person
+      requestBody:
+        description: Post the necessary fields for the API to create a new person.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+              required:
+                - firstName
+                - lastName
+                - email
+                - dateOfBirth
+            examples:
+              Create Person Bob Fellow:
+                value:
+                  firstName: Bob
+                  lastName: Fellow
+                  email: bob.fellow@gmail.com
+                  dateOfBirth: '1996-08-24'
+      responses:
+        '200':
+          description: Person Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+              examples:
+                New Person Bob Fellow:
+                  value:
+                    id: 12
+                    firstName: Bob
+                    lastName: Fellow
+                    email: bob.fellow@gmail.com
+                    dateOfBirth: '1996-08-24'
+                    emailVerified: false
+                    createDate: '2020-11-18'
+        '400':
+          description: Missing Required Information
+        '409':
+          description: Email Already Taken
+      servers:
+        - url: 'http://localhost:8080'
+components:
+  schemas:
+    Person:
+      type: object
+      title: Person
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given person.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1997-10-31'
+        emailVerified:
+          type: boolean
+          description: Set to true if the person's email has been verified.
+        createDate:
+          type: string
+          description: The date that the person was created.
+          format: date
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - dateOfBirth
+        - emailVerified
+      x-examples:
+        Alice Smith:
+          id: 142
+          firstName: Alice
+          lastName: Smith
+          email: alice.smith@gmail.com
+          dateOfBirth: '1997-10-31'
+          emailVerified: true
+          signUpDate: '2019-08-24'

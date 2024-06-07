@@ -1,0 +1,19 @@
+{
+  "properties": {
+    "apiRevision": "1",
+    "authenticationSettings": {},
+    "description": "Rest Services for a Person",
+    "displayName": "Person",
+    "isCurrent": true,
+    "path": "person-api",
+    "protocols": [
+      "https"
+    ],
+    "serviceUrl": "http://172.210.99.93:8080/",
+    "subscriptionKeyParameterNames": {
+      "header": "Ocp-Apim-Subscription-Key",
+      "query": "subscription-key"
+    },
+    "subscriptionRequired": false
+  }
+}

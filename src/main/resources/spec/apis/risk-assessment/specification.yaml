@@ -1,0 +1,212 @@
+openapi: 3.0.1
+info:
+  title: Risk Assessment
+  description: Risk Assessment Service
+  version: v1
+servers:
+  - url: https://lab49devportal.azure-api.net/riskAssessment/v1
+paths:
+  /dcraRequests:
+    post:
+      description: dcraRequest
+      tags:
+        - dcraRequest
+      summary: Create a DCRA Request for score calculation
+      requestBody:
+        description: Input to create a DCRA Request for score calculation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DcraRequestParams'
+      responses:
+        '201':
+          $ref: '#/components/responses/DcraRequest'
+
+components:
+  schemas:
+    DcraRequestParams:
+      type: object
+      properties:
+        appId:
+          type: string
+          description: The Application ID associated with this DCRA Score calculation request
+        legalEntity:
+          type: string
+          description: The 'Legal Constitution' LOV value that best represents this customer (DCRA input field A1)
+          example: "Sole Proprietorship"
+        entityType:
+          type: string
+          description: The 'Entity Type' LOV value that best represents this customer (DCRA input field A2)
+          example: "Private - SME"
+        primaryBusinessOperations:
+          type: string
+          description: The 'Nature of Business' LOV value that best represents this customer (DCRA input field A3)
+          example: "Cash intensive businesses"
+        accountOpeningPurpose:
+          type: string
+          description: The 'Purpose of Opening Account' LOV value that best represents this customer (DCRA input field A4)
+          example: "Cash Management"
+        ageOfBusiness:
+          type: string
+          format: date
+          description: The 'Date of Incorporation' as per the Trade Licence for this customer (DCRA input field A5)
+          example: "2023-07-15"
+        complexOwnershipStructureRisk:
+          type: integer
+          format: int64
+          description: |
+            An integer (1-4) representing the categorisation of ownership risk (DCRA input field A6).
+
+            Noting the definitions:
+            - Layer of UBO (LUBO) = (Max of Direct Ownership Level) - 1
+            -	Number of POA (NPOA) = Count of Power of Attorney entries
+
+            The values that can be supplied are mapped as follows:
+            1. Multi-Level Indirect Shareholding: 3 or more layers to the UBO (ie. LUBO >= 3)
+            2. Simple Indirect Ownership: Up to 2 layers to the UBO (ie. LUBO = 1 or 2)
+            3. Direct Ownership (No POA) (ie. LUBO = 0 and NPOA = 0)
+            4. Direct Ownership (One or more POA) (ie. LUBO = 0 and NPOA >= 1)
+          example: 3
+        accountInOtherUaeBanks:
+          type: boolean
+          description: Whether this customer has an account with any other UAE banks (DCRA input field A7)
+          example: false
+        pepStatusRisk:
+          type: string
+          description: The 'PEP Status' LOV value that best represents this customer (DCRA input field A8)
+          example: "FPEP identified (Client or PoA)"
+        countryOfIncorporationRisk:
+          type: string
+          description: The 'Country of Incorporation' (ISO 3166-1 two character code) that best represents this customer (DCRA input field B1)
+          pattern: "^[a-zA-Z]{2}$"
+          example: "AE"
+        jurisdiction:
+          type: string
+          description: The 'Jurisdiction (Onshore/Offshore)' value that best represents this customer (DCRA input field B2)
+          example: "Freezone"
+        countryOfOperations:
+          type: array
+          items:
+            type: string
+            pattern: "^[a-zA-Z]{2}$"
+          description: A list of unique countries (ISO 3166-1 two character codes) where the Customer, their subsidiaries and any affiliates have operations (DCRA input field B3)
+          example: ["AE", "SA", "US"]
+        uboPartnerPoaNationality:
+          type: array
+          items:
+            type: string
+            pattern: "^[a-zA-Z]{2}$"
+          description: A list of unique countries (ISO 3166-1 two character codes) where the UBO, Partner or PoA have nationalities (DCRA input field B4)
+          example: ["AE", "SA", "US"]
+        uboPartnerPoaCountryOfResidence:
+          type: array
+          items:
+            type: string
+            pattern: "^[a-zA-Z]{2}$"
+          description: A list of unique countries (ISO 3166-1 two character codes) where the UBO, Partner or PoA have residence (DCRA input field B5)
+          example: ["AE", "SA", "US"]
+        onboardingRisk:
+          type: string
+          description: The 'Onboarding Risk' value that best represents this customer (DCRA input field C1)
+          default: "Face-To-Face"
+          example: "Face-To-Face"
+        productServiceRisk:
+          type: string
+          description: The 'Product / Service Risk' (product code) value that best represents this customer (DCRA input field C2)
+          # example: TBD
+        channelRisk:
+          type: string
+          description: The 'Channel Risk' value that best represents this customer (DCRA input field C3)
+          default: "Digital"
+          example: "Digital"
+        questionnaireResponses:
+          type: array
+          minItems: 11
+          maxItems: 11
+          items:
+            type: boolean
+          description: An ordered list of responses to the customer onboarding questionnaire
+          example: [false, false, false, false, false, false, false, false, false, false, false]
+
+    DcraRequest:
+      description: DCRA Request model
+      allOf:
+        - $ref: '#/components/schemas/DcraRequestParams'
+        - type: object
+          properties:
+            id:
+              type: string
+            status:
+              type: string
+              description: The status of this DCRA Request
+              default: draft
+              enum:
+                - draft
+                - submitted
+
+    DcraScoreParams:
+      type: object
+      properties:
+        appId:
+          type: string
+          description: The Application ID associated with this DCRA Score calculation request
+        dcraRequestId:
+          type: string
+          description: The ID for the DCRA Score calculation request that resulted in this response
+        riskCode:
+          type: integer
+          format: int64
+          description: The DCRA / BRMS RISK_CODE numerical value representing the risk classification (1-7)
+          example: 5
+        riskValue:
+          type: string
+          description: The DCRA / BRMS RISK_VALUE string representing the risk classification ("Neutral Risk", "Medium Risk", "Increased Risk", etc.)
+          example: "Neutral Risk"
+
+    DcraScore:
+      description: DCRA Score model
+      allOf:
+        - $ref: '#/components/schemas/DcraScoreParams'
+        - type: object
+          properties:
+            id:
+              type: string
+
+  responses:
+    NotFound:
+      description: Item not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: Not found
+
+    DcraRequest:
+      description: "DCRA Request model"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DcraRequest'
+
+    DcraScore:
+      description: "DCRA Score model"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DcraScore'
+
+  parameters:
+    ObjectId:
+      name: id
+      in: path
+      description: Object ID
+      required: true
+      schema:
+        type: integer
+        format: int64
