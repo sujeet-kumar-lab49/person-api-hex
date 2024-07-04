@@ -19,7 +19,7 @@ jobs:
         uses: asyncapi/github-action-for-cli@v3.1.1
         with:
           template: '@asyncapi/java-spring-template' #In case of template from npm, because of @ it must be in quotes
-          filepath: src/main/resources/api/asyncapi.yaml
+          filepath: src/main/resources/spec/asyncApi/kafka.yml
           parameters: baseHref=/test-experiment/ sidebarOrganization=byTags #space separated list of key/values
           output: generated-kafka
           
