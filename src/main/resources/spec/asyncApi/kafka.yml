@@ -1,0 +1,36 @@
+asyncapi: '2.0.0'
+info:
+  title: Kafka Example API
+  version: '1.0.0'
+  description: This is a sample Kafka adapter using AsyncAPI
+servers:
+  kafkaServer:
+    url: localhost:9092
+    protocol: kafka
+channels:
+  example-topic:
+    description: Example topic
+    publish:
+      summary: Publish message to example-topic
+      operationId: publishExampleMessage
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            id:
+              type: string
+            message:
+              type: string
+    subscribe:
+      summary: Subscribe to example-topic
+      operationId: subscribeExampleMessage
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            id:
+              type: string
+            message:
+              type: string

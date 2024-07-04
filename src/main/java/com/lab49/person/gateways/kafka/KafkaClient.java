@@ -1,4 +1,4 @@
-package com.lab49.person.gateways;
+package com.lab49.person.gateways.kafka;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
