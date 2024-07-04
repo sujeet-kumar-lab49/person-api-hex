@@ -20,7 +20,7 @@ jobs:
         with:
           template: '@asyncapi/java-spring-template' #In case of template from npm, because of @ it must be in quotes
           filepath: src/main/resources/spec/asyncApi/kafka.yml
-          parameters: baseHref=/test-experiment/ sidebarOrganization=byTags #space separated list of key/values
+          parameters: -p baseHref=/test-experiment/ sidebarOrganization=byTags #space separated list of key/values
           output: generated-kafka
           
       - name: List generated sources
