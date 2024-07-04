@@ -1,6 +1,7 @@
 name: AsyncAPI documentation publishing
 
 on:
+  workflow_dispatch:
   push:
     branches: [master]
 
